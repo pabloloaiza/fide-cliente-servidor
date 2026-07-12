@@ -52,6 +52,10 @@ public class VentanaServidor extends JFrame {
         botonIniciar.addActionListener(e -> iniciarServidor());
 
         setVisible(true);
+
+        //El servidor debe quedar en escucha constante desde que se abre la ventana,
+        //sin depender de que alguien presione el botón manualmente.
+        iniciarServidor();
     }
 
     //Escribe una línea en el log de forma segura desde cualquier hilo
