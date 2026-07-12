@@ -75,8 +75,10 @@ public class VentanaServidor extends JFrame {
 
         //Hilo principal del servidor: acepta conexiones en un bucle infinito
         Thread hiloServidor = new Thread(() -> {
+            boolean seLogroIniciar = false;
             try {
                 serverSocket = new ServerSocket(PUERTO);
+                seLogroIniciar = true;
                 log("Servidor iniciado. Escuchando en el puerto " + PUERTO + "...");
 
                 //Estado de escucha constante para múltiples clientes
@@ -88,8 +90,18 @@ public class VentanaServidor extends JFrame {
                 }
             } catch (IOException ex) {
                 if (servidorActivo) {
-                    log("Error en el servidor: " + ex.getMessage());
+                    if (!seLogroIniciar) {
+                        log("No se pudo iniciar el servidor en el puerto " + PUERTO + ": " + ex.getMessage()
+                                + " (¿hay otra instancia usando ese puerto?)");
+                    } else {
+                        log("Error en el servidor: " + ex.getMessage());
+                    }
                 }
+            } finally {
+                //Si el hilo termina por cualquier razón (error de arranque, etc.) se libera el
+                //estado para que se pueda reintentar con el botón en vez de quedar bloqueado.
+                servidorActivo = false;
+                SwingUtilities.invokeLater(() -> botonIniciar.setEnabled(true));
             }
         });
         hiloServidor.start();

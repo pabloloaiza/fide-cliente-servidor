@@ -6,6 +6,7 @@ package com.mycompany.pabloloaizapracticaprogramada4s9;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,12 +15,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author Pablo Loaiza
  */
 public class VentanaInicioSesion extends JFrame {
+
+    //Tiempo máximo (ms) que se espera al servidor antes de reportar un error,
+    //para no dejar la ventana congelada si el servidor no responde
+    private static final int TIMEOUT_MS = 4000;
 
     //Componentes de la ventana
     private JLabel labelTitulo;
@@ -84,28 +90,48 @@ public class VentanaInicioSesion extends JFrame {
         String usuarioEscrito = campoUsuario.getText();
         String contrasenaEscrita = new String(campoContrasena.getPassword());
 
-        try (Socket socket = new Socket("localhost", VentanaServidor.PUERTO);
-             ObjectOutputStream salida = new ObjectOutputStream(socket.getOutputStream());
-             ObjectInputStream entrada = new ObjectInputStream(socket.getInputStream())) {
+        //Se deshabilita el botón mientras se espera la respuesta para evitar envíos duplicados
+        botonIniciarSesion.setEnabled(false);
 
-            salida.writeObject("LOGIN");
-            salida.writeObject(usuarioEscrito);
-            salida.writeObject(contrasenaEscrita);
-            salida.flush();
+        //La comunicación con el servidor se hace en un hilo aparte: si se hiciera en el hilo
+        //de la interfaz (EDT), un servidor lento o inalcanzable dejaría la ventana congelada.
+        new Thread(() -> {
+            Object respuesta = solicitarLogin(usuarioEscrito, contrasenaEscrita);
 
-            //El servidor responde con el Usuario (acceso concedido) o con un mensaje de error
-            Object respuesta = entrada.readObject();
+            SwingUtilities.invokeLater(() -> {
+                botonIniciarSesion.setEnabled(true);
+                if (respuesta instanceof Usuario) {
+                    VentanaMenuPrincipal menu = new VentanaMenuPrincipal((Usuario) respuesta);
+                    menu.setVisible(true);
+                    this.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, respuesta);
+                }
+            });
+        }).start();
+    }
 
-            if (respuesta instanceof Usuario) {
-                VentanaMenuPrincipal menu = new VentanaMenuPrincipal((Usuario) respuesta);
-                menu.setVisible(true);
-                this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, respuesta);
+    //Envía las credenciales al servidor y devuelve su respuesta: un Usuario si el acceso
+    //fue concedido, o un String con el motivo del error. Se ejecuta fuera del EDT.
+    private Object solicitarLogin(String correo, String contrasena) {
+        try (Socket socket = new Socket()) {
+            //Tiempo máximo para conectar, así no se espera indefinidamente si el servidor no responde
+            socket.connect(new InetSocketAddress("localhost", VentanaServidor.PUERTO), TIMEOUT_MS);
+            socket.setSoTimeout(TIMEOUT_MS);
+
+            try (ObjectOutputStream salida = new ObjectOutputStream(socket.getOutputStream());
+                 ObjectInputStream entrada = new ObjectInputStream(socket.getInputStream())) {
+
+                salida.writeObject("LOGIN");
+                salida.writeObject(correo);
+                salida.writeObject(contrasena);
+                salida.flush();
+
+                //El servidor responde con el Usuario (acceso concedido) o con un mensaje de error
+                return entrada.readObject();
             }
         } catch (IOException | ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "No se pudo conectar con el servidor. ¿Está encendido?\n" + ex.getMessage());
+            return "No se pudo conectar con el servidor. ¿Está encendido?\n" + ex.getMessage();
         }
     }
 

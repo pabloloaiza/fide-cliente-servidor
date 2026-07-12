@@ -5,6 +5,7 @@
 package com.mycompany.pabloloaizapracticaprogramada4s9;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
@@ -12,6 +13,10 @@ import java.net.Socket;
  * @author Pablo Loaiza
  */
 public class VentanaCrearUsuario extends javax.swing.JFrame {
+
+    //Tiempo máximo (ms) que se espera al servidor antes de reportar un error,
+    //para no dejar la ventana congelada si el servidor no responde
+    private static final int TIMEOUT_MS = 4000;
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaCrearUsuario.class.getName());
 
@@ -157,29 +162,50 @@ public class VentanaCrearUsuario extends javax.swing.JFrame {
 
         Usuario nuevoUsuario = new Usuario(nombre, apellido, correo, contrasena);
 
-        //Se conecta al servidor y se le envía la petición: tipo + objeto Usuario
-        try (Socket socket = new Socket("localhost", VentanaServidor.PUERTO);
-             ObjectOutputStream salida = new ObjectOutputStream(socket.getOutputStream());
-             ObjectInputStream entrada = new ObjectInputStream(socket.getInputStream())) {
+        //Se deshabilita el botón mientras se espera la respuesta para evitar envíos duplicados
+        jButton1.setEnabled(false);
 
-            salida.writeObject("CREAR_USUARIO");
-            salida.writeObject(nuevoUsuario);
-            salida.flush();
+        //La comunicación con el servidor se hace en un hilo aparte: si se hiciera en el hilo
+        //de la interfaz (EDT), un servidor lento o inalcanzable dejaría la ventana congelada.
+        new Thread(() -> {
+            String respuesta = enviarCreacionUsuario(nuevoUsuario);
+            boolean exito = respuesta != null && respuesta.startsWith("OK");
 
-            //Se espera la respuesta del servidor (completado o no)
-            String respuesta = (String) entrada.readObject();
-            javax.swing.JOptionPane.showMessageDialog(this, respuesta);
-
-            jTextField1.setText("");
-            jTextField2.setText("");
-            jTextField3.setText("");
-            jTextField4.setText("");
-
-        } catch (IOException | ClassNotFoundException ex) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "No se pudo conectar con el servidor. ¿Está encendido?\n" + ex.getMessage());
-        }
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                javax.swing.JOptionPane.showMessageDialog(this, respuesta);
+                if (exito) {
+                    jTextField1.setText("");
+                    jTextField2.setText("");
+                    jTextField3.setText("");
+                    jTextField4.setText("");
+                }
+                jButton1.setEnabled(true);
+            });
+        }).start();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    //Envía la petición de creación de usuario al servidor y devuelve su respuesta
+    //(o un mensaje de error si no fue posible conectarse). Se ejecuta fuera del EDT.
+    private String enviarCreacionUsuario(Usuario nuevoUsuario) {
+        try (Socket socket = new Socket()) {
+            //Tiempo máximo para conectar, así no se espera indefinidamente si el servidor no responde
+            socket.connect(new InetSocketAddress("localhost", VentanaServidor.PUERTO), TIMEOUT_MS);
+            socket.setSoTimeout(TIMEOUT_MS);
+
+            try (ObjectOutputStream salida = new ObjectOutputStream(socket.getOutputStream());
+                 ObjectInputStream entrada = new ObjectInputStream(socket.getInputStream())) {
+
+                salida.writeObject("CREAR_USUARIO");
+                salida.writeObject(nuevoUsuario);
+                salida.flush();
+
+                //Se espera la respuesta del servidor (completado o no)
+                return (String) entrada.readObject();
+            }
+        } catch (IOException | ClassNotFoundException ex) {
+            return "No se pudo conectar con el servidor. ¿Está encendido?\n" + ex.getMessage();
+        }
+    }
 
     /**
      * @param args the command line arguments
