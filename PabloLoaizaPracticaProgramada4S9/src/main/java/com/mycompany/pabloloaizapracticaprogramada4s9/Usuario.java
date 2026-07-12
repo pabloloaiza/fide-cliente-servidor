@@ -17,51 +17,41 @@ import java.util.ArrayList;
  * @author Pablo Loaiza
  */
 public class Usuario implements Comparable<Usuario>, Serializable {
-    //Atributos
-    //Para la tercera prácitca programada, se cambió el atribud
+
+    private static final long serialVersionUID = 1L;
+
     private String nombre;
     private String apellido;
     private String correo;
     private String contrasena;
-    
-    //Implementación de método abstracto de la interface
+
     @Override
     public int compareTo(Usuario otroUsuario) {
-        return this.nombre.compareTo(otroUsuario.getNombre());    
+        return this.nombre.compareTo(otroUsuario.getNombre());
     }
-    
-    //Método para poder eliminar los objetos con el mismo nombre en el main
+
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
         Usuario otro = (Usuario) obj;
-
         return nombre.equals(otro.nombre)
                 && apellido.equals(otro.apellido)
                 && correo.equals(otro.correo)
                 && contrasena.equals(otro.contrasena);
     }
-    
-    //Método para poder devolver el nombre en el main con System.out.println
+
     @Override
     public String toString() {
         return nombre;
     }
-    
-    //Método para dar bienvenida al usuario
-    public static void IniciarSesion(Usuario nombre){
+
+    public static void IniciarSesion(Usuario nombre) {
         System.out.println("¡Bienvenido " + nombre.getNombre() + "!\n");
     }
-    
-    //Método para guardar TODA la colección de usuarios en un archivo
-    public static void GuardarColeccion(ArrayList<Usuario> usuarios) {
+
+    //Método sincronizado para evitar que dos hilos escriban el archivo a la vez
+    public static synchronized void GuardarColeccion(ArrayList<Usuario> usuarios) {
         try {
             FileOutputStream archivoUsuarios = new FileOutputStream("Usuarios.dat");
             ObjectOutputStream output = new ObjectOutputStream(archivoUsuarios);
@@ -73,9 +63,7 @@ public class Usuario implements Comparable<Usuario>, Serializable {
         }
     }
 
-    //Método para leer la colección de usuarios desde el archivo
-    //Si el archivo todavía no existe, se devuelve una lista vacía
-    public static ArrayList<Usuario> LeerColeccion() {
+    public static synchronized ArrayList<Usuario> LeerColeccion() {
         ArrayList<Usuario> usuarios = new ArrayList<>();
         try {
             FileInputStream archivoUsuarios = new FileInputStream("Usuarios.dat");
@@ -89,45 +77,20 @@ public class Usuario implements Comparable<Usuario>, Serializable {
         }
         return usuarios;
     }
-    
-    //Constructor
+
     public Usuario(String nombre, String apellido, String correo, String contrasena) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
         this.contrasena = contrasena;
     }
-    
-    //Getters y setters
-    public String getNombre() {
-        return nombre;
-    }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public String getContrasena() {
-        return contrasena;
-    }
-
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
+    public String getContrasena() { return contrasena; }
+    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
 }
