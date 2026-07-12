@@ -91,31 +91,29 @@ public class VentanaServidor extends JFrame {
         hiloServidor.start();
     }
 
-    //Procesa la petición de un cliente: recibe el Usuario, lo guarda y responde
+    //Procesa la petición de un cliente. Se soportan dos tipos de petición:
+    //  "CREAR_USUARIO" -> el cliente envía un Usuario para almacenar
+    //  "LOGIN"         -> el cliente envía correo y contraseña para validar acceso
     private void atenderCliente(Socket cliente) {
         try (ObjectInputStream entrada = new ObjectInputStream(cliente.getInputStream());
              ObjectOutputStream salida = new ObjectOutputStream(cliente.getOutputStream())) {
 
-            //Se recibe el objeto Usuario enviado por el cliente
-            Object recibido = entrada.readObject();
+            //Primero se lee el tipo de petición enviado por el cliente
+            Object tipoRecibido = entrada.readObject();
+            String tipo = (tipoRecibido instanceof String) ? (String) tipoRecibido : "";
 
-            if (recibido instanceof Usuario) {
-                Usuario nuevoUsuario = (Usuario) recibido;
-                log("Petición recibida: crear usuario '" + nuevoUsuario.getCorreo() + "'");
-
-                //Se guarda dentro de la colección existente
-                ArrayList<Usuario> coleccion = Usuario.LeerColeccion();
-                coleccion.add(nuevoUsuario);
-                Usuario.GuardarColeccion(coleccion);
-
-                //Se confirma al cliente que la petición fue COMPLETADA
-                salida.writeObject("OK: Usuario guardado correctamente.");
-                salida.flush();
-                log("Petición COMPLETADA: usuario '" + nuevoUsuario.getCorreo() + "' guardado.");
-            } else {
-                salida.writeObject("ERROR: Petición no válida.");
-                salida.flush();
-                log("Petición NO completada: objeto recibido no válido.");
+            switch (tipo) {
+                case "CREAR_USUARIO":
+                    atenderCrearUsuario(entrada, salida);
+                    break;
+                case "LOGIN":
+                    atenderLogin(entrada, salida);
+                    break;
+                default:
+                    salida.writeObject("ERROR: Petición no válida.");
+                    salida.flush();
+                    log("Petición NO completada: tipo de petición no reconocido.");
+                    break;
             }
         } catch (IOException | ClassNotFoundException ex) {
             log("Petición NO completada. Error: " + ex.getMessage());
@@ -125,6 +123,59 @@ public class VentanaServidor extends JFrame {
             } catch (IOException ex) {
                 log("Error al cerrar la conexión: " + ex.getMessage());
             }
+        }
+    }
+
+    //Atiende una petición de creación de usuario: recibe el Usuario, lo guarda y responde
+    private void atenderCrearUsuario(ObjectInputStream entrada, ObjectOutputStream salida)
+            throws IOException, ClassNotFoundException {
+        Object recibido = entrada.readObject();
+
+        if (recibido instanceof Usuario) {
+            Usuario nuevoUsuario = (Usuario) recibido;
+            log("Petición recibida: crear usuario '" + nuevoUsuario.getCorreo() + "'");
+
+            //Se guarda dentro de la colección existente
+            ArrayList<Usuario> coleccion = Usuario.LeerColeccion();
+            coleccion.add(nuevoUsuario);
+            Usuario.GuardarColeccion(coleccion);
+
+            //Se confirma al cliente que la petición fue COMPLETADA
+            salida.writeObject("OK: Usuario guardado correctamente.");
+            salida.flush();
+            log("Petición COMPLETADA: usuario '" + nuevoUsuario.getCorreo() + "' guardado.");
+        } else {
+            salida.writeObject("ERROR: Petición no válida.");
+            salida.flush();
+            log("Petición NO completada: objeto recibido no válido.");
+        }
+    }
+
+    //Atiende una petición de inicio de sesión: recibe correo y contraseña, valida contra
+    //la colección almacenada y responde con el Usuario encontrado o con un mensaje de error
+    private void atenderLogin(ObjectInputStream entrada, ObjectOutputStream salida)
+            throws IOException, ClassNotFoundException {
+        String correo = (String) entrada.readObject();
+        String contrasena = (String) entrada.readObject();
+
+        log("Petición recibida: inicio de sesión para '" + correo + "'");
+
+        ArrayList<Usuario> coleccion = Usuario.LeerColeccion();
+        Usuario usuarioEncontrado = null;
+        for (Usuario usuario : coleccion) {
+            if (usuario.getCorreo().equals(correo) && usuario.getContrasena().equals(contrasena)) {
+                usuarioEncontrado = usuario;
+            }
+        }
+
+        if (usuarioEncontrado != null) {
+            salida.writeObject(usuarioEncontrado);
+            salida.flush();
+            log("Petición COMPLETADA: acceso concedido a '" + correo + "'.");
+        } else {
+            salida.writeObject("ERROR: El usuario no tiene acceso a la aplicacion.");
+            salida.flush();
+            log("Petición COMPLETADA: acceso denegado a '" + correo + "'.");
         }
     }
 

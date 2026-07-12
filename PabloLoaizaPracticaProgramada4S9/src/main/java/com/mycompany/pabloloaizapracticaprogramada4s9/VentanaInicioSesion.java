@@ -3,7 +3,10 @@
  */
 package com.mycompany.pabloloaizapracticaprogramada4s9;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -75,29 +78,34 @@ public class VentanaInicioSesion extends JFrame {
         botonCrearUsuario.addActionListener(this::crearUsuarioAccion);
     }
 
-    //Método que busca el usuario en la colección guardada en el archivo
+    //Método que envía la petición de inicio de sesión al SERVIDOR por medio de un socket.
+    //Es el servidor quien verifica las credenciales y notifica si el usuario puede acceder.
     private void iniciarSesionAccion(java.awt.event.ActionEvent evt) {
         String usuarioEscrito = campoUsuario.getText();
         String contrasenaEscrita = new String(campoContrasena.getPassword());
 
-        ArrayList<Usuario> coleccionUsuarios = Usuario.LeerColeccion();
+        try (Socket socket = new Socket("localhost", VentanaServidor.PUERTO);
+             ObjectOutputStream salida = new ObjectOutputStream(socket.getOutputStream());
+             ObjectInputStream entrada = new ObjectInputStream(socket.getInputStream())) {
 
-        //Se recorre la colección buscando un usuario que coincida
-        Usuario usuarioEncontrado = null;
-        for (Usuario usuario : coleccionUsuarios) {
-            if (usuario.getCorreo().equals(usuarioEscrito)
-                    && usuario.getContrasena().equals(contrasenaEscrita)) {
-                usuarioEncontrado = usuario;
+            salida.writeObject("LOGIN");
+            salida.writeObject(usuarioEscrito);
+            salida.writeObject(contrasenaEscrita);
+            salida.flush();
+
+            //El servidor responde con el Usuario (acceso concedido) o con un mensaje de error
+            Object respuesta = entrada.readObject();
+
+            if (respuesta instanceof Usuario) {
+                VentanaMenuPrincipal menu = new VentanaMenuPrincipal((Usuario) respuesta);
+                menu.setVisible(true);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, respuesta);
             }
-        }
-
-        //Si no se encontró, no tiene acceso. Si sí, se abre el menú principal
-        if (usuarioEncontrado == null) {
-            JOptionPane.showMessageDialog(this, "El usuario no tiene acceso a la aplicacion.");
-        } else {
-            VentanaMenuPrincipal menu = new VentanaMenuPrincipal(usuarioEncontrado);
-            menu.setVisible(true);
-            this.dispose();
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar con el servidor. ¿Está encendido?\n" + ex.getMessage());
         }
     }
 

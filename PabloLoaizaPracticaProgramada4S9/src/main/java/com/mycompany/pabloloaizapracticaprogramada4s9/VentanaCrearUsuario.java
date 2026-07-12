@@ -4,8 +4,6 @@
  */
 package com.mycompany.pabloloaizapracticaprogramada4s9;
 
-import java.util.ArrayList;
-import javax.swing.JFrame;
 import java.io.*;
 import java.net.Socket;
 
@@ -14,43 +12,6 @@ import java.net.Socket;
  * @author Pablo Loaiza
  */
 public class VentanaCrearUsuario extends javax.swing.JFrame {
-
-    //Acción del botón Guardar: envía el usuario al SERVIDOR por medio de un socket
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-        String nombre = jTextField1.getText();
-        String apellido = jTextField2.getText();
-        String correo = jTextField3.getText();
-        String contrasena = jTextField4.getText();
-
-        if (nombre.isEmpty() || apellido.isEmpty() || correo.isEmpty() || contrasena.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Por favor complete todos los campos.");
-            return;
-        }
-
-        Usuario nuevoUsuario = new Usuario(nombre, apellido, correo, contrasena);
-
-        //Se conecta al servidor y se le envía el objeto Usuario
-        try (java.net.Socket socket = new java.net.Socket("localhost", VentanaServidor.PUERTO);
-             java.io.ObjectOutputStream salida = new java.io.ObjectOutputStream(socket.getOutputStream());
-             java.io.ObjectInputStream entrada = new java.io.ObjectInputStream(socket.getInputStream())) {
-
-            salida.writeObject(nuevoUsuario);
-            salida.flush();
-
-            //Se espera la respuesta del servidor (completado o no)
-            String respuesta = (String) entrada.readObject();
-            javax.swing.JOptionPane.showMessageDialog(this, respuesta);
-
-            jTextField1.setText("");
-            jTextField2.setText("");
-            jTextField3.setText("");
-            jTextField4.setText("");
-
-        } catch (java.io.IOException | ClassNotFoundException ex) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "No se pudo conectar con el servidor. ¿Está encendido?\n" + ex.getMessage());
-        }
-    }
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaCrearUsuario.class.getName());
 
@@ -180,7 +141,7 @@ public class VentanaCrearUsuario extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField4ActionPerformed
 
-    //Acción del botón Guardar: agrega el usuario a la colección y la guarda en el archivo
+    //Acción del botón Guardar: envía la petición de creación al SERVIDOR por medio de un socket
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Se leen los datos que escribió el usuario en las cajas de texto
         String nombre = jTextField1.getText();
@@ -194,22 +155,30 @@ public class VentanaCrearUsuario extends javax.swing.JFrame {
             return;
         }
 
-        //Se lee la colección que ya está guardada en el archivo
-        ArrayList<Usuario> coleccionUsuarios = Usuario.LeerColeccion();
-
-        //Se crea el nuevo usuario y se agrega a la colección
         Usuario nuevoUsuario = new Usuario(nombre, apellido, correo, contrasena);
-        coleccionUsuarios.add(nuevoUsuario);
 
-        //Se vuelve a guardar la colección completa en el archivo
-        Usuario.GuardarColeccion(coleccionUsuarios);
+        //Se conecta al servidor y se le envía la petición: tipo + objeto Usuario
+        try (Socket socket = new Socket("localhost", VentanaServidor.PUERTO);
+             ObjectOutputStream salida = new ObjectOutputStream(socket.getOutputStream());
+             ObjectInputStream entrada = new ObjectInputStream(socket.getInputStream())) {
 
-        //Mensaje de confirmación y limpieza de las cajas de texto
-        javax.swing.JOptionPane.showMessageDialog(this, "Usuario guardado correctamente.");
-        jTextField1.setText("");
-        jTextField2.setText("");
-        jTextField3.setText("");
-        jTextField4.setText("");
+            salida.writeObject("CREAR_USUARIO");
+            salida.writeObject(nuevoUsuario);
+            salida.flush();
+
+            //Se espera la respuesta del servidor (completado o no)
+            String respuesta = (String) entrada.readObject();
+            javax.swing.JOptionPane.showMessageDialog(this, respuesta);
+
+            jTextField1.setText("");
+            jTextField2.setText("");
+            jTextField3.setText("");
+            jTextField4.setText("");
+
+        } catch (IOException | ClassNotFoundException ex) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "No se pudo conectar con el servidor. ¿Está encendido?\n" + ex.getMessage());
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
