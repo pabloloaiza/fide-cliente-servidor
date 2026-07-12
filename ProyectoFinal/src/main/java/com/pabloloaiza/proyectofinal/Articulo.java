@@ -8,12 +8,18 @@ package com.pabloloaiza.proyectofinal;
  *
  * @author Pablo Loaiza
  */
-public class Cliente extends Usuario {
+public class Producto implements ProductoVendible{
+    public double precio;
+    public String nombre;
+    public String descripcion;
     
-    private double puntosAcumulados;
+    @Override
+    public void AgregarProductoVendible(){
+        
+    }
     
-    public Cliente(String nombre, String contrasena, String tipo, double puntosAcumulados) {
-        super(nombre, contrasena, tipo);
-        this.puntosAcumulados = puntosAcumulados;
+    @Override
+    public void EliminarProductoVendible(){
+        
     }
 }

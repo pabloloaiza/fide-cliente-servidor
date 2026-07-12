@@ -8,6 +8,13 @@ package com.pabloloaiza.proyectofinal;
  *
  * @author Pablo Loaiza
  */
-public class Cocinero {
-    
+public class Cocinero extends Usuario {
+    private double salario;
+    private String horario;
+
+    public Cocinero(String nombre, String contrasena, String tipo, double salario, String horario) {
+        super(nombre, contrasena, tipo);
+        this.salario = salario;
+        this.horario = horario;
+    }
 }

@@ -8,6 +8,17 @@ package com.pabloloaiza.proyectofinal;
  *
  * @author Pablo Loaiza
  */
-public class Combo {
+public class Combo implements ProductoVendible {
     
+    
+    
+    @Override
+    public void AgregarProductoVendible(){
+        
+    }
+    
+    @Override
+    public void EliminarProductoVendible(){
+        
+    }
 }
