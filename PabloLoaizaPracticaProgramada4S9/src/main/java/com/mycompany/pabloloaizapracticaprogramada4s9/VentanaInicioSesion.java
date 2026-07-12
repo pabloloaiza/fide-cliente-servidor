@@ -23,11 +23,9 @@ import javax.swing.SwingUtilities;
  */
 public class VentanaInicioSesion extends JFrame {
 
-    //Tiempo máximo (ms) que se espera al servidor antes de reportar un error,
-    //para no dejar la ventana congelada si el servidor no responde
-    private static final int TIMEOUT_MS = 4000;
-
-    //Componentes de la ventana
+    //Tiempo máximo de espera antes de reportar un error
+    private static final int TIMEOUT_MS = 3000;
+    
     private JLabel labelTitulo;
     private JLabel labelUsuario;
     private JLabel labelContrasena;
@@ -36,14 +34,13 @@ public class VentanaInicioSesion extends JFrame {
     private JButton botonIniciarSesion;
     private JButton botonCrearUsuario;
 
-    //Constructor: arma la ventana
+    //Componentes de la ventana
     public VentanaInicioSesion() {
         setTitle("Fideflix - Inicio de Sesion");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(350, 220);
         setLocationRelativeTo(null);
-
-        //Se usa un panel con posiciones manuales (layout nulo) para colocar todo
+        
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
@@ -77,24 +74,21 @@ public class VentanaInicioSesion extends JFrame {
 
         add(panel);
 
-        //Acción del botón Iniciar Sesion
+        //Botón Iniciar Sesion
         botonIniciarSesion.addActionListener(this::iniciarSesionAccion);
 
-        //Acción del botón Crear Usuario: abre la ventana de creación de usuarios (punto 1)
+        //Botón Crear Usuario
         botonCrearUsuario.addActionListener(this::crearUsuarioAccion);
     }
 
-    //Método que envía la petición de inicio de sesión al SERVIDOR por medio de un socket.
-    //Es el servidor quien verifica las credenciales y notifica si el usuario puede acceder.
+    //Método que envía la petición al SERVIDOR por medio de un socket.
     private void iniciarSesionAccion(java.awt.event.ActionEvent evt) {
         String usuarioEscrito = campoUsuario.getText();
         String contrasenaEscrita = new String(campoContrasena.getPassword());
-
-        //Se deshabilita el botón mientras se espera la respuesta para evitar envíos duplicados
+        
         botonIniciarSesion.setEnabled(false);
 
-        //La comunicación con el servidor se hace en un hilo aparte: si se hiciera en el hilo
-        //de la interfaz (EDT), un servidor lento o inalcanzable dejaría la ventana congelada.
+        //La comunicación con el servidor se hace en un hilo aparte
         new Thread(() -> {
             Object respuesta = solicitarLogin(usuarioEscrito, contrasenaEscrita);
 
@@ -111,11 +105,9 @@ public class VentanaInicioSesion extends JFrame {
         }).start();
     }
 
-    //Envía las credenciales al servidor y devuelve su respuesta: un Usuario si el acceso
-    //fue concedido, o un String con el motivo del error. Se ejecuta fuera del EDT.
+    //Envía las credenciales al servidor y devuelve la respuesta
     private Object solicitarLogin(String correo, String contrasena) {
         try (Socket socket = new Socket()) {
-            //Tiempo máximo para conectar, así no se espera indefinidamente si el servidor no responde
             socket.connect(new InetSocketAddress("localhost", VentanaServidor.PUERTO), TIMEOUT_MS);
             socket.setSoTimeout(TIMEOUT_MS);
 
@@ -126,8 +118,7 @@ public class VentanaInicioSesion extends JFrame {
                 salida.writeObject(correo);
                 salida.writeObject(contrasena);
                 salida.flush();
-
-                //El servidor responde con el Usuario (acceso concedido) o con un mensaje de error
+                
                 return entrada.readObject();
             }
         } catch (IOException | ClassNotFoundException ex) {
@@ -135,7 +126,7 @@ public class VentanaInicioSesion extends JFrame {
         }
     }
 
-    //Método que abre la ventana de creación de usuarios
+    //Abre la ventana de creación de usuarios
     private void crearUsuarioAccion(java.awt.event.ActionEvent evt) {
         VentanaCrearUsuario ventana = new VentanaCrearUsuario();
         ventana.setVisible(true);

@@ -14,8 +14,7 @@ import java.net.Socket;
  */
 public class VentanaCrearUsuario extends javax.swing.JFrame {
 
-    //Tiempo máximo (ms) que se espera al servidor antes de reportar un error,
-    //para no dejar la ventana congelada si el servidor no responde
+    //Tiempo máximo que se espera al servidor
     private static final int TIMEOUT_MS = 4000;
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaCrearUsuario.class.getName());
@@ -148,7 +147,7 @@ public class VentanaCrearUsuario extends javax.swing.JFrame {
 
     //Acción del botón Guardar: envía la petición de creación al SERVIDOR por medio de un socket
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        //Se leen los datos que escribió el usuario en las cajas de texto
+        //Se leen los datos de las cajas de texto
         String nombre = jTextField1.getText();
         String apellido = jTextField2.getText();
         String correo = jTextField3.getText();
@@ -162,11 +161,10 @@ public class VentanaCrearUsuario extends javax.swing.JFrame {
 
         Usuario nuevoUsuario = new Usuario(nombre, apellido, correo, contrasena);
 
-        //Se deshabilita el botón mientras se espera la respuesta para evitar envíos duplicados
+        //Se deshabilita el botón mientras se espera la respuesta para evitar duplicados
         jButton1.setEnabled(false);
 
-        //La comunicación con el servidor se hace en un hilo aparte: si se hiciera en el hilo
-        //de la interfaz (EDT), un servidor lento o inalcanzable dejaría la ventana congelada.
+        //La comunicación con el servidor se hace en un hilo aparte
         new Thread(() -> {
             String respuesta = enviarCreacionUsuario(nuevoUsuario);
             boolean exito = respuesta != null && respuesta.startsWith("OK");
@@ -184,11 +182,9 @@ public class VentanaCrearUsuario extends javax.swing.JFrame {
         }).start();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    //Envía la petición de creación de usuario al servidor y devuelve su respuesta
-    //(o un mensaje de error si no fue posible conectarse). Se ejecuta fuera del EDT.
+    //Pide creación de usuario al servidor y devuelve su respuesta
     private String enviarCreacionUsuario(Usuario nuevoUsuario) {
         try (Socket socket = new Socket()) {
-            //Tiempo máximo para conectar, así no se espera indefinidamente si el servidor no responde
             socket.connect(new InetSocketAddress("localhost", VentanaServidor.PUERTO), TIMEOUT_MS);
             socket.setSoTimeout(TIMEOUT_MS);
 
@@ -199,7 +195,6 @@ public class VentanaCrearUsuario extends javax.swing.JFrame {
                 salida.writeObject(nuevoUsuario);
                 salida.flush();
 
-                //Se espera la respuesta del servidor (completado o no)
                 return (String) entrada.readObject();
             }
         } catch (IOException | ClassNotFoundException ex) {

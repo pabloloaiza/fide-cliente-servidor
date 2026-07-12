@@ -14,10 +14,7 @@ import java.util.Collections;
 public class PabloLoaizaPracticaProgramada4s9 {
     public static void main(String[] args) {
 
-        //Se levanta el SERVIDOR dentro de este mismo programa. La ventana del servidor
-        //arranca su propio hilo (ServerSocket en el puerto 5000) desde su constructor,
-        //por lo que al crearla queda escuchando conexiones sin congelar el resto.
-        //Así se demuestra la ejecución en hilos: servidor y cliente conviven en el mismo proceso.
+        //Se inicia el servidor en su propio hilo
         new VentanaServidor();
 
         //Código de la entrega #3: ventana de inicio de sesión (el CLIENTE)

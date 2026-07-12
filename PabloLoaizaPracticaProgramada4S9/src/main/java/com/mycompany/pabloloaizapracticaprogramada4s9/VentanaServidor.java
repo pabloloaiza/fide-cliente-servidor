@@ -53,12 +53,11 @@ public class VentanaServidor extends JFrame {
 
         setVisible(true);
 
-        //El servidor debe quedar en escucha constante desde que se abre la ventana,
-        //sin depender de que alguien presione el botón manualmente.
+        //El servidor queda en escucha desde que se abre la ventana,
         iniciarServidor();
     }
 
-    //Escribe una línea en el log de forma segura desde cualquier hilo
+    //Escribe una línea en el log desde cualquier hilo
     private void log(String mensaje) {
         String hora = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         SwingUtilities.invokeLater(() -> txtLog.append("[" + hora + "] " + mensaje + "\n"));
@@ -73,7 +72,7 @@ public class VentanaServidor extends JFrame {
         servidorActivo = true;
         botonIniciar.setEnabled(false);
 
-        //Hilo principal del servidor: acepta conexiones en un bucle infinito
+        //Hilo principal del servidor
         Thread hiloServidor = new Thread(() -> {
             boolean seLogroIniciar = false;
             try {
@@ -81,7 +80,7 @@ public class VentanaServidor extends JFrame {
                 seLogroIniciar = true;
                 log("Servidor iniciado. Escuchando en el puerto " + PUERTO + "...");
 
-                //Estado de escucha constante para múltiples clientes
+                //Escucha constante para múltiples clientes
                 while (servidorActivo) {
                     Socket cliente = serverSocket.accept();
                     log("Cliente conectado desde " + cliente.getInetAddress().getHostAddress());
@@ -98,8 +97,7 @@ public class VentanaServidor extends JFrame {
                     }
                 }
             } finally {
-                //Si el hilo termina por cualquier razón (error de arranque, etc.) se libera el
-                //estado para que se pueda reintentar con el botón en vez de quedar bloqueado.
+                //Si el hilo termina, se libera el estado
                 servidorActivo = false;
                 SwingUtilities.invokeLater(() -> botonIniciar.setEnabled(true));
             }
@@ -107,14 +105,11 @@ public class VentanaServidor extends JFrame {
         hiloServidor.start();
     }
 
-    //Procesa la petición de un cliente. Se soportan dos tipos de petición:
-    //  "CREAR_USUARIO" -> el cliente envía un Usuario para almacenar
-    //  "LOGIN"         -> el cliente envía correo y contraseña para validar acceso
+    //Procesa la petición de un cliente
     private void atenderCliente(Socket cliente) {
         try (ObjectInputStream entrada = new ObjectInputStream(cliente.getInputStream());
              ObjectOutputStream salida = new ObjectOutputStream(cliente.getOutputStream())) {
 
-            //Primero se lee el tipo de petición enviado por el cliente
             Object tipoRecibido = entrada.readObject();
             String tipo = (tipoRecibido instanceof String) ? (String) tipoRecibido : "";
 
@@ -142,7 +137,7 @@ public class VentanaServidor extends JFrame {
         }
     }
 
-    //Atiende una petición de creación de usuario: recibe el Usuario, lo guarda y responde
+    //Proceso de creación de usuario
     private void atenderCrearUsuario(ObjectInputStream entrada, ObjectOutputStream salida)
             throws IOException, ClassNotFoundException {
         Object recibido = entrada.readObject();
@@ -151,12 +146,10 @@ public class VentanaServidor extends JFrame {
             Usuario nuevoUsuario = (Usuario) recibido;
             log("Petición recibida: crear usuario '" + nuevoUsuario.getCorreo() + "'");
 
-            //Se guarda dentro de la colección existente
             ArrayList<Usuario> coleccion = Usuario.LeerColeccion();
             coleccion.add(nuevoUsuario);
             Usuario.GuardarColeccion(coleccion);
 
-            //Se confirma al cliente que la petición fue COMPLETADA
             salida.writeObject("OK: Usuario guardado correctamente.");
             salida.flush();
             log("Petición COMPLETADA: usuario '" + nuevoUsuario.getCorreo() + "' guardado.");
@@ -167,8 +160,7 @@ public class VentanaServidor extends JFrame {
         }
     }
 
-    //Atiende una petición de inicio de sesión: recibe correo y contraseña, valida contra
-    //la colección almacenada y responde con el Usuario encontrado o con un mensaje de error
+    //Proceso de inicio de sesión
     private void atenderLogin(ObjectInputStream entrada, ObjectOutputStream salida)
             throws IOException, ClassNotFoundException {
         String correo = (String) entrada.readObject();

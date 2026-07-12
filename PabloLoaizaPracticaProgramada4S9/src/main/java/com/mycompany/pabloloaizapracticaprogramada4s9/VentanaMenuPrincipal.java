@@ -13,11 +13,8 @@ import javax.swing.SwingConstants;
  * @author Pablo Loaiza
  */
 public class VentanaMenuPrincipal extends JFrame {
-
-    //Componentes de la ventana
     private JLabel labelBienvenida;
 
-    //Constructor: recibe el usuario que inició sesión para saludarlo
     public VentanaMenuPrincipal(Usuario usuario) {
         setTitle("Fideflix - Menu Principal");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
