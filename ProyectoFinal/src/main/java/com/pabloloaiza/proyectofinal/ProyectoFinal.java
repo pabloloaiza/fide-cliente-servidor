@@ -1,8 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package com.pabloloaiza.proyectofinal;
+
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -11,6 +9,7 @@ package com.pabloloaiza.proyectofinal;
 public class ProyectoFinal {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        // Levanto la interfaz en el hilo de eventos de Swing (buena practica)
+        SwingUtilities.invokeLater(() -> new VentanaMenuPrincipal());
     }
 }

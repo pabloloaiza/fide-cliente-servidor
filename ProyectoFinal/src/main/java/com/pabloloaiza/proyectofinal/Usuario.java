@@ -1,14 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.pabloloaiza.proyectofinal;
+
+import java.io.Serializable;
 
 /**
  *
  * @author Pablo Loaiza
  */
-public abstract class Usuario {
+// Serializable para poder guardar los usuarios como objetos en el archivo
+public abstract class Usuario implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private String nombre;
     private String contrasena;
     private String tipo;

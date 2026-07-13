@@ -16,4 +16,12 @@ public class Cliente extends Usuario {
         super(nombre, contrasena, tipo);
         this.puntosAcumulados = puntosAcumulados;
     }
+
+    public double getPuntosAcumulados() {
+        return puntosAcumulados;
+    }
+
+    public void setPuntosAcumulados(double puntosAcumulados) {
+        this.puntosAcumulados = puntosAcumulados;
+    }
 }

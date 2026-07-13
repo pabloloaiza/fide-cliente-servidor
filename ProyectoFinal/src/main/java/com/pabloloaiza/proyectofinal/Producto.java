@@ -1,15 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
 package com.pabloloaiza.proyectofinal;
+
+import java.io.Serializable;
 
 /**
  *
  * @author Pablo Loaiza
  */
-public interface ProductoVendible {   
-    
-    public void AgregarProductoVendible();
-    public void EliminarProductoVendible();
+public interface Producto extends Serializable {
+
+    // Todo producto vendible debe poder dar su nombre y precio
+    public String getNombre();
+    public double getPrecio();
 }

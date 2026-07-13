@@ -1,21 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.pabloloaiza.proyectofinal;
 
-import javax.swing.*;
+import java.awt.GridLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 
-//other
-import java.awt.*;
-import java.net.Socket;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 /**
  *
  * @author Pablo Loaiza
  */
+// Ventana inicial. Es la unica que cierra la aplicacion al cerrarse (EXIT_ON_CLOSE).
+// Desde aqui se puede iniciar sesion o registrar un nuevo usuario.
 public class VentanaMenuPrincipal extends JFrame {
+
     private JButton botonIngresar;
     private JButton botonCrearUsuario;
 
@@ -24,40 +20,23 @@ public class VentanaMenuPrincipal extends JFrame {
         setSize(350, 200);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(4, 2));
+        setLayout(new GridLayout(2, 1));
+
         botonIngresar = new JButton("Ingresar");
         botonCrearUsuario = new JButton("Crear Usuario");
         add(botonIngresar);
         add(botonCrearUsuario);
-        
-        //botonIngresar.addActionListener(e -> iniciarSesion());
-        botonCrearUsuario.addActionListener(e -> {
-            VentanaCrearUsuario crear = new VentanaCrearUsuario();
-            crear.setVisible(true);
+
+        // Cada boton abre su ventana y cierra el menu principal
+        botonIngresar.addActionListener(e -> {
+            new VentanaIniciarSesion();
+            dispose();
         });
-        /*
-        setVisible(true); 
-    } */
-    /*
-    private void iniciarSesion() {
-        try {
-            String respuesta = entrada.readLine();
-            if (respuesta.equals("OK")) {
-                VentanaMenuPrincipal menu =
-                        new VentanaMenuPrincipal(txtUsuario.getText());
-                menu.setVisible(true);
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this,
-                        "Usuario o contraseña incorrectos.");
-            }
-            socket.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                    "No fue posible conectar con el servidor.");
-        }
-    }
-    */
-    setVisible(true); 
+        botonCrearUsuario.addActionListener(e -> {
+            new VentanaCrearUsuario();
+            dispose();
+        });
+
+        setVisible(true);
     }
 }

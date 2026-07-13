@@ -1,25 +1,34 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.pabloloaiza.proyectofinal;
 
 /**
  *
  * @author Pablo Loaiza
  */
-public class Producto implements ProductoVendible{
-    public double precio;
-    public String nombre;
-    public String descripcion;
-    
-    @Override
-    public void AgregarProductoVendible(){
-        
+public class Articulo implements Producto {
+
+    private static final long serialVersionUID = 1L;
+
+    private double precio;
+    private String nombre;
+    private String descripcion;
+
+    public Articulo(String nombre, double precio, String descripcion) {
+        this.nombre = nombre;
+        this.precio = precio;
+        this.descripcion = descripcion;
     }
-    
+
     @Override
-    public void EliminarProductoVendible(){
-        
+    public String getNombre() {
+        return nombre;
+    }
+
+    @Override
+    public double getPrecio() {
+        return precio;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
     }
 }
