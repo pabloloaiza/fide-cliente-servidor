@@ -2,19 +2,25 @@
 
 Este documento presenta un resumen del objetivo del proyecto final para el curso Programación Cliente-Servidor Concurrente, así como un resumen de avances y cambios al diseño propuesto inicialmente (detallado en el archivo "PabloLoaiza_ProyectoFinalAvance1.pdf")
 
-**Nota**: Con la idea de tener este trabajo como parte de un portafolio de proyectos a futuro, los commits se realizarán en ingles. Y eventualmente, este archivo, también será traducido a inglés con la idea de captar una audiencia más amplia. 
+**Notas**:
+1. Con la idea de tener este trabajo como parte de un portafolio de proyectos a futuro, los commits se realizarán en ingles. Y eventualmente, este archivo, también será traducido a inglés con la idea de captar una audiencia más amplia.
+2. El programa cuenta con los siguientes usuarios "dummy" para probar funcionalidades
+| Usuario | Contraseña | Rol |
+|---------|------------|-----|
+| cliente | cliente | cliente|
+| cajero  | cajero  | cajero |
+|cocinero |cocinero |cocinero|
 
 **Cambios con respecto al avance 1 (PDF):**
-
 1. Cambios de nombre en interfaz y clase
- - Interfaz: ~~ProductoVendible~~ -> Producto
- - Clase: ~~Producto~~ -> Articulo
+- Interfaz: ~~ProductoVendible~~ -> Producto
+- Clase: ~~Producto~~ -> Articulo
 
 2. Cambio de ubicación de atributos
- - La interfaz Producto (antes denominada "ProductoVendible") ya no implementará los siguientes atributos. En cambio, los atributos se definirán en las clases que implementan la interfaz
-  - Precio
-  - Nombre
-  - Descripción
+- La interfaz Producto (antes denominada "ProductoVendible") ya no implementará los siguientes atributos. En cambio, los atributos se definirán en las clases que implementan la interfaz
+ - Precio
+ - Nombre
+ - Descripción
 
 
 | ID | Historia de usuario | Estado |
