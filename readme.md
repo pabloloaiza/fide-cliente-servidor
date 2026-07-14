@@ -5,6 +5,7 @@ Este documento presenta un resumen del objetivo del proyecto final para el curso
 **Notas**:
 1. Con la idea de tener este trabajo como parte de un portafolio de proyectos a futuro, los commits se realizarán en ingles. Y eventualmente, este archivo, también será traducido a inglés con la idea de captar una audiencia más amplia.
 2. El programa cuenta con los siguientes usuarios "dummy" para probar funcionalidades
+
 | Usuario | Contraseña | Rol |
 |---------|------------|-----|
 | cliente | cliente | cliente|
