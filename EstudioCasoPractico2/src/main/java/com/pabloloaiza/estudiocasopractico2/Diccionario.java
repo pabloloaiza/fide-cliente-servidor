@@ -20,9 +20,6 @@ import java.util.ArrayList;
 public class Diccionario implements Serializable {
 
     private ArrayList<Termino> terminiosdiccionario;
-
-    //Constructor vacio, para cuando se lee el archivo
-    public Diccionario() {}
     
     public Diccionario(ArrayList<Termino> terminiosdiccionario) {
         this.terminiosdiccionario = terminiosdiccionario;
@@ -42,16 +39,17 @@ public class Diccionario implements Serializable {
     }
 
     //Método para escribir un objeto a un archivo
-    public static void LeerDiccionario() {
+    public static Diccionario LeerDiccionario() throws IOException, ClassNotFoundException {
         try {
             FileInputStream archivoDiccionarios = new FileInputStream("Diccionario.pablo");
             ObjectInputStream input = new ObjectInputStream(archivoDiccionarios);
             Diccionario diccionarioLeido = (Diccionario) input.readObject();
-//            terminiosdiccionario = (ArrayList<Termino>) in.readObject();
+            //terminiosdiccionario = (ArrayList<Termino>) in.readObject();
             input.close();
             archivoDiccionarios.close();
+            return diccionarioLeido;
         } catch (IOException | ClassNotFoundException exception) {
-            System.out.println("Exepción: " + exception.getMessage());
+            throw exception;
         }
     }
 

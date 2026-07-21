@@ -4,6 +4,7 @@
  */
 package com.pabloloaiza.estudiocasopractico2;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
@@ -89,10 +90,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     
     private void BotonBuscadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonBuscadorActionPerformed
         Diccionario diccionario = new Diccionario(terminosDiccionario);
-        
+        try {
+            Diccionario.LeerDiccionario();
+        } catch (IOException | ClassNotFoundException ex) {
+            System.getLogger(VentanaPrincipal.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
         //Hasta aqui, aun no se puede buscar en el archivo serializado.
         //diccionario = diccionario.getTerminiosdiccionario();
-        String terminoBuscar = FieldBuscador.getSelectedText();
+        String terminoBuscar = FieldBuscador.getText();
 
         boolean existe = false;
         for (Termino termino : diccionario.getTerminiosdiccionario()) {
@@ -107,12 +112,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 ResultadoBuscador.setText("Descripción: " + termino.getDescripcion());
                 break;
             }
-        }
-
-        if (existe) {
-            System.out.println("Debería imprimir aquí o dentro del for?");
-        } else {
-            System.out.println("El termino no existe en el diccionario");
         }
         System.out.println(Arrays.asList(diccionario));
     }//GEN-LAST:event_BotonBuscadorActionPerformed
