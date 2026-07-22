@@ -93,7 +93,8 @@ public class NuevoDiccionario extends javax.swing.JFrame {
         
     }//GEN-LAST:event_FieldNuevoTerminoActionPerformed
 
-    ArrayList<Termino> NuevoSetTerminos = new ArrayList<>();
+    // Variable global estatica: almacena los terminos ingresados antes de guardarlos
+    static ArrayList<Termino> NuevoSetTerminos = new ArrayList<>();
 
     private void BotonGuardarTerminoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonGuardarTerminoActionPerformed
         String nuevoTermino = FieldNuevoTermino.getText();
@@ -108,6 +109,17 @@ public class NuevoDiccionario extends javax.swing.JFrame {
            }
         }
         
+        // Se valida que la palabra no venga vacia antes de guardarla
+        if (nuevoTermino.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Debe ingresar una palabra para el termino",
+                    "Notificacion",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
         if (!existe) {
             NuevoSetTerminos.add(new Termino(nuevoTermino, nuevaDescription));
             FieldNuevoTermino.setText("");
@@ -118,8 +130,6 @@ public class NuevoDiccionario extends javax.swing.JFrame {
                     "Notificacion",
                     JOptionPane.INFORMATION_MESSAGE
             );
-            //Falla con "no compatible"
-            //Collections.sort(NuevoSetTerminos);
         } else {
             JOptionPane.showMessageDialog(
                     null,
@@ -135,8 +145,35 @@ public class NuevoDiccionario extends javax.swing.JFrame {
     }//GEN-LAST:event_BotonVolverActionPerformed
 
     private void BotonGuardarDiccionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonGuardarDiccionarioActionPerformed
+        // Se valida que exista al menos un termino antes de crear el diccionario
+        if (NuevoSetTerminos.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "No hay terminos para guardar. Agregue al menos uno.",
+                    "Notificacion",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        // 1. Se ordena alfabeticamente la lista de terminos (usa Comparable de Termino)
+        Collections.sort(NuevoSetTerminos);
+
+        // 2. Se crea el objeto Diccionario asignando la coleccion de terminos
         Diccionario diccionarioGuardar = new Diccionario(NuevoSetTerminos);
-        Diccionario.EscribirDiccionario(diccionarioGuardar);
+
+        // 3. Se guarda el diccionario en disco por serializacion dentro de un hilo aparte
+        Thread hiloGuardar = new Thread(() -> {
+            Diccionario.EscribirDiccionario(diccionarioGuardar);
+            // Se vuelve al hilo de la interfaz para mostrar el mensaje al usuario
+            javax.swing.SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+                    null,
+                    "Diccionario guardado correctamente",
+                    "Notificacion",
+                    JOptionPane.INFORMATION_MESSAGE
+            ));
+        });
+        hiloGuardar.start();
     }//GEN-LAST:event_BotonGuardarDiccionarioActionPerformed
 
     /**

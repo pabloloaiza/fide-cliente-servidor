@@ -5,8 +5,6 @@
 package com.pabloloaiza.estudiocasopractico2;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 /**
@@ -86,34 +84,55 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private ArrayList<Termino> terminosDiccionario;
-    
     private void BotonBuscadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonBuscadorActionPerformed
-        Diccionario diccionario = new Diccionario(terminosDiccionario);
+        //1. Se lee el diccionario desde el archivo serializado.
+        Diccionario diccionario;
         try {
-            Diccionario.LeerDiccionario();
+            diccionario = Diccionario.LeerDiccionario();
         } catch (IOException | ClassNotFoundException ex) {
-            System.getLogger(VentanaPrincipal.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(
+                    null,
+                    "No se pudo leer el diccionario. Primero cree y guarde uno.",
+                    "Notificacion",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
         }
-        //Hasta aqui, aun no se puede buscar en el archivo serializado.
-        //diccionario = diccionario.getTerminiosdiccionario();
-        String terminoBuscar = FieldBuscador.getText();
 
+        // Se valida que el diccionario y su lista de terminos existan
+        if (diccionario == null || diccionario.getTerminiosdiccionario() == null) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "El diccionario esta vacio.",
+                    "Notificacion",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        // 2. Se busca el termino ingresado por el usuario dentro del diccionario
+        String terminoBuscar = FieldBuscador.getText().trim();
         boolean existe = false;
         for (Termino termino : diccionario.getTerminiosdiccionario()) {
-            if (termino.getTermino().equals(terminoBuscar)) {
+            if (termino.getTermino().equalsIgnoreCase(terminoBuscar)) {
                 existe = true;
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Descripción: " + termino.getDescripcion(),
-                        "Notificacion",
-                        JOptionPane.INFORMATION_MESSAGE
-                );
+                // Si existe, se muestra la definicion en el espacio designado (JLabel)
                 ResultadoBuscador.setText("Descripción: " + termino.getDescripcion());
                 break;
             }
         }
-        System.out.println(Arrays.asList(diccionario));
+
+        // Si no existe, se informa que la busqueda no arrojo resultados
+        if (!existe) {
+            ResultadoBuscador.setText("La busqueda no arrojo resultados.");
+            JOptionPane.showMessageDialog(
+                    null,
+                    "La busqueda no arrojo resultados.",
+                    "Notificacion",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        }
     }//GEN-LAST:event_BotonBuscadorActionPerformed
 
     private void FieldBuscadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FieldBuscadorActionPerformed

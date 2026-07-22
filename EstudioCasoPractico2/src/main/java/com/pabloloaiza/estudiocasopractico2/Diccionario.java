@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import static java.lang.System.in;
 import java.util.ArrayList;
 
 /**
@@ -19,8 +18,16 @@ import java.util.ArrayList;
  */
 public class Diccionario implements Serializable {
 
+    // Identificador de version para la serializacion
+    private static final long serialVersionUID = 1L;
+
     private ArrayList<Termino> terminiosdiccionario;
-    
+
+    // Constructor vacio: inicializa la lista para evitar valores nulos
+    public Diccionario() {
+        this.terminiosdiccionario = new ArrayList<>();
+    }
+
     public Diccionario(ArrayList<Termino> terminiosdiccionario) {
         this.terminiosdiccionario = terminiosdiccionario;
     }
@@ -44,7 +51,6 @@ public class Diccionario implements Serializable {
             FileInputStream archivoDiccionarios = new FileInputStream("Diccionario.pablo");
             ObjectInputStream input = new ObjectInputStream(archivoDiccionarios);
             Diccionario diccionarioLeido = (Diccionario) input.readObject();
-            //terminiosdiccionario = (ArrayList<Termino>) in.readObject();
             input.close();
             archivoDiccionarios.close();
             return diccionarioLeido;

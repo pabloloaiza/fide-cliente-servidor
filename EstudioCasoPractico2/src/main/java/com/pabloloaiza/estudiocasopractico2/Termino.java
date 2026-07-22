@@ -15,23 +15,37 @@ import java.io.Serializable;
  *
  * @author Pablo Loaiza
  */
-public class Termino implements Serializable {
+// Se implementan las interfaces para serializar y ordenar la colección
+
+public class Termino implements Serializable, Comparable<Termino> {
+    // Identificador de version para la serializacion
+    private static final long serialVersionUID = 1L;
 
     private String termino;
     private String descripcion;
 
-    //Override temporar, para confirmar que los elementos de estén guardando bien en el arraylist
+    // Constructor vacio: requerido para crear objetos sin datos iniciales
+    public Termino() {
+    }
+
+    public Termino(String palabra, String concepto) {
+        this.termino = palabra;
+        this.descripcion = concepto;
+    }
+
+    // Se ordena por la palabra, sin distinguir mayusculas/minusculas
+    @Override
+    public int compareTo(Termino otro) {
+        return this.termino.compareToIgnoreCase(otro.termino);
+    }
+
+    // Override para mostrar el contenido del termino de forma legible (para pruebas)
     @Override
     public String toString() {
         return "Termino{" +
                "termino='" + termino + '\'' +
                ", descripcion='" + descripcion + '\'' +
                '}';
-    }
-    
-    public Termino(String palabra, String concepto) {
-        this.termino = palabra;
-        this.descripcion = concepto;
     }
 
     //Método para escribir un objeto a un archivo
@@ -49,8 +63,6 @@ public class Termino implements Serializable {
 
 //Método para escribir un objeto a un archivo
     public static void LeerTermino() {
-        //Termino TerminoLeido = new Termino();
-
         try {
             FileInputStream archivoTerminos = new FileInputStream("Terminos.pablo");
             ObjectInputStream input = new ObjectInputStream(archivoTerminos);
@@ -59,9 +71,7 @@ public class Termino implements Serializable {
             archivoTerminos.close();
         } catch (IOException | ClassNotFoundException exception) {
             System.out.println("Exepción: " + exception.getMessage());
-        } /* finally {
-            return TerminoLeido;
-        }*/
+        }
     }
 
     public String getTermino() {
