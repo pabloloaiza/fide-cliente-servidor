@@ -4,7 +4,7 @@ Este documento presenta un resumen del objetivo del proyecto final para el curso
 
 **Notas**:
 1. Con la idea de tener este trabajo como parte de un portafolio de proyectos a futuro, los commits se realizarán en ingles. Y eventualmente, este archivo, también será traducido a inglés con la idea de captar una audiencia más amplia.
-2. El programa cuenta con los siguientes usuarios "dummy" para probar funcionalidades
+2. El programa cuenta con los siguientes usuarios de prueba para confirmar las funcionalidades de la aplicación
 
 | Usuario | Contraseña | Rol |
 |---------|------------|-----|
@@ -13,7 +13,7 @@ Este documento presenta un resumen del objetivo del proyecto final para el curso
 |cocinero |cocinero |cocinero|
 
 **Cambios con respecto al avance 1 (PDF):**
-1. Cambios de nombre en interfaz y clase
+1. Cambios de nombre en interfaz y clase en comparación con el PDF del avance 1
 - Interfaz: ~~ProductoVendible~~ -> Producto
 - Clase: ~~Producto~~ -> Articulo
 
@@ -31,7 +31,7 @@ Este documento presenta un resumen del objetivo del proyecto final para el curso
 | HU3 | Como cajero, necesito editar productos agregados anteriormente, con el fin de mantener el menú actualizado. | No iniciado |
 | HU4 | ~~Como cocinero, necesito recibir notificaciones de nuevos pedidos, con el fin de preparar adecuadamente las órdenes.~~ | Completado |
 | HU5 | Como cocinero, necesito completar ordenes que ya se han realizado, con el fin de organizar el trabajo. | No iniciado |
-| HU6 | Como cliente o cajero, necesito generar facturas de los pedidos realizados, con el fin de llevar un registro financiero. | No iniciado |
+| HU6 | Como cliente necesito generar facturas de los pedidos realizados, con el fin de llevar un registro financiero. | No iniciado |
 | HU7 | ~~Como usuario, necesito iniciar sesión en la aplicación, con el fin de realizar acciones en el sistema.~~ | Completado |
 | HU8 | ~~Como usuario, necesito cerrar la sesión activa, con el fin de preservar la privacidad de mis datos.~~ | Completado |
 | HU9 | Como cliente, necesito consultar mis ordenes, con el fin de llevar un registro de mis pedidos. | No iniciado |

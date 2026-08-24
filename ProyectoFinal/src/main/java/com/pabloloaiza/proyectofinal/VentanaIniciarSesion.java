@@ -50,7 +50,7 @@ public class VentanaIniciarSesion extends JFrame {
         // Busco un usuario que coincida en nombre y contraseña
         for (Usuario u : usuarios) {
             if (u.getNombre().equalsIgnoreCase(nombre) && u.getContrasena().equals(contrasena)) {
-                Utilidades.cerrarTodasLasVentanas();
+                //Utilidades.cerrarTodasLasVentanas();
                 VentanaCrearUsuario.abrirVentanaSegunRol(u);
                 return;
             }
