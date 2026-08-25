@@ -1,5 +1,8 @@
 package com.pabloloaiza.proyectofinal;
 
+import com.pabloloaiza.proyectofinal.modelo.Orden;
+import com.pabloloaiza.proyectofinal.modelo.Producto;
+import com.pabloloaiza.proyectofinal.modelo.Usuario;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,16 +14,16 @@ import java.util.ArrayList;
  *
  * @author Pablo Loaiza
  */
-// Centraliza la lectura/escritura de los archivos .extension.
-// Guardo listas completas de objetos (serializacion Java) en lugar de ir
-// agregando de a uno, porque anexar a un ObjectOutputStream corrompe el flujo.
+// CLASE EN DESUSO. Era la persistencia con archivos .extension de la entrega
+// anterior; ahora todo se guarda en MySQL a traves de los DAO del servidor.
+// La dejo solo como referencia de la version con serializacion.
+@Deprecated
 public class GestorArchivos {
 
     public static final String ARCHIVO_USUARIOS = "Usuarios.extension";
     public static final String ARCHIVO_PRODUCTOS = "Productos.extension";
     public static final String ARCHIVO_ORDENES = "Ordenes.extension";
 
-    // Lee una lista serializada; si el archivo no existe devuelve lista vacia
     @SuppressWarnings("unchecked")
     private static <T> ArrayList<T> leerLista(String ruta) {
         File archivo = new File(ruta);
