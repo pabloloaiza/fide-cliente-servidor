@@ -42,7 +42,7 @@ public class VentanaCajero extends JFrame {
         botonAgregarCombo.addActionListener(e -> new VentanaCrearProducto(conexion, true));
         botonAdministrar.addActionListener(e -> new VentanaAdministrarProductos(conexion));
         botonCerrarSesion.addActionListener(e -> Utilidades.cerrarSesion(conexion));
-
+        botonCerrarSesion.addActionListener(e -> dispose());
         setVisible(true);
     }
 }

@@ -28,7 +28,6 @@ public class VentanaMenuPrincipal extends JFrame {
 
         botonIngresar.addActionListener(e -> {
             new VentanaIniciarSesion();
-            dispose();
         });
         botonCrearUsuario.addActionListener(e -> {
             new VentanaCrearUsuario();

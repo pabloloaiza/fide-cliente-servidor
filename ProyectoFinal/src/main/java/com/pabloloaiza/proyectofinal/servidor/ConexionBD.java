@@ -12,11 +12,10 @@ import java.sql.SQLException;
 // habla directo con la base de datos, va siempre por el socket.
 public class ConexionBD {
 
-    // >>> CAMBIAR ESTOS TRES VALORES POR LOS DE MI MySQL LOCAL <<<
     private static final String URL =
-            "jdbc:mysql://localhost:3306/pos?useSSL=false&serverTimezone=UTC";
+            "jdbc:mysql://127.0.0.1:3306/fideburguesas";
     private static final String USUARIO = "root";
-    private static final String PASSWORD = "TU_PASSWORD";
+    private static final String PASSWORD = "CONTRASEÑA_AQUI";
 
     // Cada llamada abre una conexion nueva. Como cada cliente corre en su propio
     // hilo, asi evito que dos hilos compartan la misma Connection (no es thread-safe).

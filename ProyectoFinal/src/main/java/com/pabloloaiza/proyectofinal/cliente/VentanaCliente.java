@@ -43,7 +43,8 @@ public class VentanaCliente extends JFrame {
         botonPuntos.addActionListener(e -> JOptionPane.showMessageDialog(this,
                 "Puntos disponibles: " + cliente.getPuntosAcumulados()));
         botonCerrarSesion.addActionListener(e -> Utilidades.cerrarSesion(conexion));
-
+        botonCerrarSesion.addActionListener(e -> dispose());
+        
         setVisible(true);
     }
 }

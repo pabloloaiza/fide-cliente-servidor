@@ -36,7 +36,8 @@ public class VentanaIniciarSesion extends JFrame {
         JButton botonIngresar = new JButton("Ingresar");
         add(botonIngresar);
         botonIngresar.addActionListener(e -> iniciarSesion());
-
+        botonIngresar.addActionListener(e -> dispose());
+        
         setVisible(true);
     }
 
@@ -63,7 +64,7 @@ public class VentanaIniciarSesion extends JFrame {
             return;
         }
 
-        Utilidades.cerrarTodasLasVentanas();
+        //Utilidades.cerrarTodasLasVentanas();
         Utilidades.abrirVentanaSegunRol((Usuario) respuesta.getContenido(), conexion);
     }
 }

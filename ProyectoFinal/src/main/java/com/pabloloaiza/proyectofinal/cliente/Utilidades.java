@@ -24,8 +24,6 @@ public class Utilidades {
         if (conexion != null) {
             conexion.cerrar();
         }
-        cerrarTodasLasVentanas();
-        new VentanaMenuPrincipal();
     }
 
     public static void abrirVentanaSegunRol(Usuario usuario, ConexionServidor conexion) {
