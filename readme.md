@@ -28,11 +28,11 @@ Este documento presenta un resumen del objetivo del proyecto final para el curso
 |----|---------------------|--------|
 | HU1 | ~~Como nuevo usuario, necesito poder registrarme en el sistema, con el fin de poder realizar pedidos y ver mis puntos canjeables.~~ | Completado |
 | HU2 | ~~Como cajero, necesito registrar productos o combos, con el fin de mantener el menú actualizado.~~ | Completado |
-| HU3 | Como cajero, necesito editar productos agregados anteriormente, con el fin de mantener el menú actualizado. | No iniciado |
+| HU3 | ~~Como cajero, necesito editar productos agregados anteriormente, con el fin de mantener el menú actualizado.~~ | Completado |
 | HU4 | ~~Como cocinero, necesito recibir notificaciones de nuevos pedidos, con el fin de preparar adecuadamente las órdenes.~~ | Completado |
-| HU5 | Como cocinero, necesito completar ordenes que ya se han realizado, con el fin de organizar el trabajo. | No iniciado |
-| HU6 | Como cliente necesito generar facturas de los pedidos realizados, con el fin de llevar un registro financiero. | No iniciado |
+| HU5 | ~~Como cocinero, necesito completar ordenes que ya se han realizado, con el fin de organizar el trabajo.~~ | Completado |
+| HU6 | ~~Como cliente necesito generar facturas de los pedidos realizados, con el fin de llevar un registro financiero.~~ | Completado |
 | HU7 | ~~Como usuario, necesito iniciar sesión en la aplicación, con el fin de realizar acciones en el sistema.~~ | Completado |
 | HU8 | ~~Como usuario, necesito cerrar la sesión activa, con el fin de preservar la privacidad de mis datos.~~ | Completado |
-| HU9 | Como cliente, necesito consultar mis ordenes, con el fin de llevar un registro de mis pedidos. | No iniciado |
-| HU10 | Como cajero necesito marcar productos como agotados, con el fin de evitar ordenes en productos no disponibles.  | No iniciado |
+| HU9 | ~~Como cliente, necesito consultar mis ordenes, con el fin de llevar un registro de mis pedidos.~~ | Completado |
+| HU10 | Como cajero necesito marcar productos como agotados, con el fin de evitar ordenes en productos no disponibles.~~  | Completado |
