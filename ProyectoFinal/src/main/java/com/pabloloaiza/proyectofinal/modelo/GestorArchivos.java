@@ -1,4 +1,4 @@
-package com.pabloloaiza.proyectofinal;
+package com.pabloloaiza.proyectofinal.modelo;
 
 import com.pabloloaiza.proyectofinal.modelo.Orden;
 import com.pabloloaiza.proyectofinal.modelo.Producto;

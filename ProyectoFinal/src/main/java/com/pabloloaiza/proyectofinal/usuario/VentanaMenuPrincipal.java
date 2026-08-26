@@ -1,4 +1,4 @@
-package com.pabloloaiza.proyectofinal.cliente;
+package com.pabloloaiza.proyectofinal.usuario;
 
 import java.awt.GridLayout;
 import javax.swing.JButton;

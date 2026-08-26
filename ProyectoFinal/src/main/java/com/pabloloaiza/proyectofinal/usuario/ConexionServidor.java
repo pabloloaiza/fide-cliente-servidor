@@ -1,4 +1,4 @@
-package com.pabloloaiza.proyectofinal.cliente;
+package com.pabloloaiza.proyectofinal.usuario;
 
 import com.pabloloaiza.proyectofinal.red.Accion;
 import com.pabloloaiza.proyectofinal.red.Peticion;

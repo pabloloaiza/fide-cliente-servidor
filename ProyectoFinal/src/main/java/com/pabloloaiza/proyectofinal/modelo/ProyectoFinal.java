@@ -1,6 +1,6 @@
-package com.pabloloaiza.proyectofinal;
+package com.pabloloaiza.proyectofinal.modelo;
 
-import com.pabloloaiza.proyectofinal.cliente.VentanaMenuPrincipal;
+import com.pabloloaiza.proyectofinal.usuario.VentanaMenuPrincipal;
 import javax.swing.SwingUtilities;
 
 /**

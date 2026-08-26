@@ -1,4 +1,4 @@
-package com.pabloloaiza.proyectofinal.cliente;
+package com.pabloloaiza.proyectofinal.usuario;
 
 import com.pabloloaiza.proyectofinal.modelo.Articulo;
 import com.pabloloaiza.proyectofinal.modelo.Producto;
